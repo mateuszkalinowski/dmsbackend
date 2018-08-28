@@ -15,13 +15,5 @@ public class DmsbackendApplication {
         SpringApplication.run(DmsbackendApplication.class, args);
     }
 
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurerAdapter() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**").allowedMethods("GET","POST","DELETE","PUT","OPTIONS").allowedOrigins("*");
-//            }
-//        };
-//    }
+
 }

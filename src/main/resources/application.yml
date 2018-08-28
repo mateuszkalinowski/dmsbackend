@@ -5,10 +5,9 @@ spring:
     password:
     platform: h2
 #  datasource:
-#    url: jdbc:mysql://azimuthapp.pl:3306/messagesDatabase?useUnicode=yes&characterEncoding=UTF-8
+#    url: jdbc:mysql://azimuthapp.pl:3306/dmsrest?useUnicode=yes&characterEncoding=UTF-8
 #    username: root
 #    password: Very.Strong.Password
-#    initialization-mode: always
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,6 +19,6 @@ spring:
     store-type: jdbc
     jdbc:
       initialize-schema: always
-    timeout: 3600s
+    timeout: 60m
 server:
-  port: 8080
+  port: 8090

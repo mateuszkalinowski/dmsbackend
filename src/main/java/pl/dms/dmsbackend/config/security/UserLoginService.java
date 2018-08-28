@@ -11,6 +11,7 @@ import pl.dms.dmsbackend.model.UserRole;
 import pl.dms.dmsbackend.repositories.UserRepository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class UserLoginService implements UserDetailsService {
@@ -23,7 +24,7 @@ public class UserLoginService implements UserDetailsService {
         User user = userRepository.findByEmail(username);
         if(user == null)
             throw new UsernameNotFoundException("User not found");
-        Set<GrantedAuthority> authorities = new HashSet<>();
+        Set<GrantedAuthority> authorities = convertAuthorities(user.getUserRoles());
         org.springframework.security.core.userdetails.User userDetails =
                 new org.springframework.security.core.userdetails.User(
                         user.getEmail(),
@@ -32,10 +33,10 @@ public class UserLoginService implements UserDetailsService {
         return userDetails;
     }
 
-    private Set<GrantedAuthority> convertAuthorities(Set<UserRole> userRoles) {
+    private Set<GrantedAuthority> convertAuthorities(List<UserRole> userRoles) {
         Set<GrantedAuthority> authorities = new HashSet<>();
         for(UserRole ur: userRoles) {
-            authorities.add(new SimpleGrantedAuthority(ur.getRole()));
+            authorities.add(new SimpleGrantedAuthority(ur.getUserRole().toString()));
         }
         return authorities;
     }

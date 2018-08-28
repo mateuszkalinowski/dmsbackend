@@ -1,9 +1,9 @@
-package pl.dms.dmsbackend.dtos;
+package pl.dms.dmsbackend.dataInput;
 
 import lombok.Data;
 
 @Data
-public class Credentials {
+public class CredentialsDTO {
     private String email;
     private String password;
 }

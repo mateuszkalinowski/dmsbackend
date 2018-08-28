@@ -3,25 +3,42 @@ package pl.dms.dmsbackend.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.dms.dmsbackend.enums.UserRoleEnum;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
 @Setter
 @Getter
+@Table(name = "ROLES")
 public class UserRole {
 
     @Id
     @GeneratedValue
     private Long id;
-    private String role;
-    private String description;
 
-    public UserRole(String role, String description) {
-        this.role = role;
-        this.description = description;
+    @Enumerated(EnumType.STRING)
+    private UserRoleEnum userRole;
+
+    public UserRole(UserRoleEnum userRole) {
+        this.userRole = userRole;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRole role = (UserRole) o;
+        return Objects.equals(id, role.id) &&
+                userRole == role.userRole;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userRole);
     }
 }
