@@ -47,13 +47,13 @@ public class OnFinishLoading implements ApplicationListener<ContextRefreshedEven
         categoryRepository.save(new Category("Internet"));
         categoryRepository.save(new Category("Rada mieszkańców"));
 
-//        announcementRepository.save(new Announcement("Brak ciepłej wody","W dniach 4-5 września 2018 nie będzie ciepłej wody",workerRepository.findTopByEmail("worker2@local")));
-//        announcementRepository.save(new Announcement("Zamknięte główne drzwi","\"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.\"",workerRepository.findTopByEmail("worker2@local")));
-//        announcementRepository.save(new Announcement("Brak prądu1","W dniach 22-23 paźniernika nie będzie prądu",workerRepository.findTopByEmail("worker2@local")));
-//        announcementRepository.save(new Announcement("Brak prądu2","W dniach 22-23 paźniernika nie będzie prądu",workerRepository.findTopByEmail("worker2@local")));
-//        announcementRepository.save(new Announcement("Brak prądu3","W dniach 22-23 paźniernika nie będzie prądu",workerRepository.findTopByEmail("worker2@local")));
-//        announcementRepository.save(new Announcement("Brak prądu4","W dniach 22-23 paźniernika nie będzie prądu",workerRepository.findTopByEmail("worker2@local")));
-//        announcementRepository.save(new Announcement("Brak prądu5","W dniach 22-23 paźniernika nie będzie prądu",workerRepository.findTopByEmail("worker2@local")));
+        announcementRepository.save(new Announcement("Brak ciepłej wody","W dniach 4-5 września 2018 nie będzie ciepłej wody",workerRepository.findTopByEmail("worker2@local")));
+        announcementRepository.save(new Announcement("Zamknięte główne drzwi","\"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.\"",workerRepository.findTopByEmail("worker2@local")));
+        announcementRepository.save(new Announcement("Brak prądu1","W dniach 22-23 paźniernika nie będzie prądu",workerRepository.findTopByEmail("worker2@local")));
+        announcementRepository.save(new Announcement("Brak prądu2","W dniach 22-23 paźniernika nie będzie prądu",workerRepository.findTopByEmail("worker2@local")));
+        announcementRepository.save(new Announcement("Brak prądu3","W dniach 22-23 paźniernika nie będzie prądu",workerRepository.findTopByEmail("worker2@local")));
+        announcementRepository.save(new Announcement("Brak prądu4","W dniach 22-23 paźniernika nie będzie prądu",workerRepository.findTopByEmail("worker2@local")));
+        announcementRepository.save(new Announcement("Brak prądu5","W dniach 22-23 paźniernika nie będzie prądu",workerRepository.findTopByEmail("worker2@local")));
 
     }
 }

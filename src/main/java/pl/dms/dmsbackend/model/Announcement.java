@@ -18,6 +18,8 @@ public class Announcement implements Serializable, Comparable<Announcement> {
     private Long id;
 
     private String title;
+
+    @Column(length = 512)
     private String content;
 
     private LocalDateTime timeStamp;

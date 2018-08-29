@@ -25,8 +25,11 @@ public class Request implements Serializable {
     private RequestStatusEnum status;
 
     private String title;
+
+    @Column(length = 512)
     private String content;
 
+    @Column(length = 512)
     private String comment;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
