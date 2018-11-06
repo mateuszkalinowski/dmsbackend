@@ -1,34 +1,49 @@
 package pl.dms.dmsbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerator;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
+import pl.dms.dmsbackend.model.users.Worker;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
+@Table(name = "Category")
 public class Category implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Long id;
 
     private String category;
 
     @JsonIgnore
     @OneToMany(mappedBy = "category")
-    List<Request> requestList = new ArrayList<>();
+    List<Task> taskList = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "categories")
+    private List<Worker> workers = new ArrayList<>();
+
     public Category(String category) {
         this.category = category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category1 = (Category) o;
+        return Objects.equals(id, category1.id) &&
+                Objects.equals(category, category1.category) &&
+                Objects.equals(taskList, category1.taskList) &&
+                Objects.equals(workers, category1.workers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, category, taskList, workers);
     }
 }

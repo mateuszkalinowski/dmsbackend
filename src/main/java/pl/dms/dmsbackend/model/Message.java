@@ -1,8 +1,7 @@
 package pl.dms.dmsbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
+import pl.dms.dmsbackend.model.users.Worker;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,11 +9,10 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
-public class Announcement implements Serializable, Comparable<Announcement> {
+public class Message implements Serializable, Comparable<Message> {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
@@ -25,15 +23,14 @@ public class Announcement implements Serializable, Comparable<Announcement> {
     private LocalDateTime timeStamp;
 
     @ManyToOne
-    @JoinColumn(name = "inhabitant_id")
     private Worker sender;
 
     @Override
-    public int compareTo(Announcement o) {
+    public int compareTo(Message o) {
         return this.timeStamp.compareTo(o.timeStamp);
     }
 
-    public Announcement(String title, String content, Worker sender) {
+    public Message(String title, String content, Worker sender) {
         this.title = title;
         this.content = content;
         this.sender = sender;

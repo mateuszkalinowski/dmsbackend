@@ -1,24 +1,23 @@
-package pl.dms.dmsbackend.model;
+package pl.dms.dmsbackend.model.users;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
+import pl.dms.dmsbackend.enums.UserStatusEnum;
+import pl.dms.dmsbackend.model.UserRole;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(unique = true)
@@ -26,20 +25,23 @@ public class User implements Serializable {
 
     @JsonIgnore
     private String password;
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
 
     public User(){}
 
-    public User(String email, String password, String firstname, String lastname,UserRole role) {
+    public User(String email, String password, String firstname, String lastname, UserRole role) {
         this.email = email;
         this.password = password;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstName = firstname;
+        this.lastName = lastname;
         userRoles.add(role);
     }
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<UserRole> userRoles = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private UserStatusEnum userStatus;
 }

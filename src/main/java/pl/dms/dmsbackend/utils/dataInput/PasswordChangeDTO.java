@@ -1,4 +1,4 @@
-package pl.dms.dmsbackend.dataInput;
+package pl.dms.dmsbackend.utils.dataInput;
 
 import lombok.Data;
 

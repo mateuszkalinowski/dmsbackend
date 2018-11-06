@@ -1,9 +1,8 @@
 package pl.dms.dmsbackend.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.dms.dmsbackend.model.Inhabitant;
-import pl.dms.dmsbackend.model.Worker;
+import pl.dms.dmsbackend.model.users.Worker;
 
 public interface WorkerRepository extends JpaRepository<Worker,Long> {
-    Worker findTopByEmail(String mail);
+    Worker findByEmail(String email);
 }

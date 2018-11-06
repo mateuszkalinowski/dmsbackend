@@ -5,31 +5,39 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import pl.dms.dmsbackend.dataInput.NewRequestDTO;
-import pl.dms.dmsbackend.dataOutput.RequestDTO;
+import pl.dms.dmsbackend.enumTranslation.RequestStatusTranslation;
+import pl.dms.dmsbackend.model.users.User;
+import pl.dms.dmsbackend.repositories.UserRepository;
+import pl.dms.dmsbackend.utils.dataInput.NewRequestDTO;
+import pl.dms.dmsbackend.utils.dataOutput.RequestDTO;
 import pl.dms.dmsbackend.enums.RequestStatusEnum;
-import pl.dms.dmsbackend.model.Inhabitant;
-import pl.dms.dmsbackend.model.Request;
+import pl.dms.dmsbackend.model.users.Inhabitant;
+import pl.dms.dmsbackend.model.Task;
 import pl.dms.dmsbackend.repositories.CategoryRepository;
 import pl.dms.dmsbackend.repositories.InhabitantRepository;
-import pl.dms.dmsbackend.repositories.RequestRepository;
+import pl.dms.dmsbackend.repositories.TaskRepository;
 import pl.dms.dmsbackend.utils.Page;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
 @RequestMapping("api/request")
 @Transactional
-public class RequestController {
+public class TaskController {
 
     @Autowired
     private InhabitantRepository inhabitantRepository;
 
     @Autowired
-    private RequestRepository requestRepository;
+    private UserRepository userRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -39,19 +47,19 @@ public class RequestController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String currentEmail = authentication.getName();
-            Inhabitant inhabitant = inhabitantRepository.findTopByEmail(currentEmail);
+            Inhabitant inhabitant = inhabitantRepository.findByEmail(currentEmail);
             if(inhabitant==null)
                 return ResponseEntity.badRequest().build();
-            Request request = new Request();
-            request.setInhabitant(inhabitant);
-            request.setCategory(categoryRepository.getTopByCategory(newRequestDTO.getCategory()));
-            request.setStatus(RequestStatusEnum.REQUEST_WAITING);
-            request.setContent(newRequestDTO.getDescription());
-            request.setTitle(newRequestDTO.getTitle());
-            request.setComment("");
-            request.setTimeStamp(LocalDateTime.now());
+            Task task = new Task();
+            task.setInhabitant(inhabitant);
+            task.setCategory(categoryRepository.getTopByCategory(newRequestDTO.getCategory()));
+            task.setStatus(RequestStatusEnum.REQUEST_WAITING);
+            task.setContent(newRequestDTO.getDescription());
+            task.setTitle(newRequestDTO.getTitle());
+            task.setComment("");
+            task.setTimeStamp(LocalDateTime.now());
 
-            requestRepository.save(request);
+            taskRepository.save(task);
             return ResponseEntity.ok().build();
 
         } catch (Exception e) {
@@ -63,14 +71,14 @@ public class RequestController {
     public ResponseEntity deleteRequest(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
-        Inhabitant inhabitant = inhabitantRepository.findTopByEmail(currentEmail);
+        User inhabitant = userRepository.findByEmail(currentEmail);
         if(inhabitant==null)
             return ResponseEntity.badRequest().build();
 
-        Request request = requestRepository.findById(id).orElse(null);
+        Task task = taskRepository.findById(id).orElse(null);
 
-        if(request.getInhabitant().equals(inhabitant)) {
-            requestRepository.delete(request);
+        if(task.getInhabitant().equals(inhabitant)) {
+            taskRepository.delete(task);
             return ResponseEntity.ok().build();
         }
         else
@@ -83,14 +91,14 @@ public class RequestController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String currentEmail = authentication.getName();
-            Inhabitant inhabitant = inhabitantRepository.findTopByEmail(currentEmail);
+            Inhabitant inhabitant = inhabitantRepository.findByEmail(currentEmail);
             if (inhabitant == null)
                 return ResponseEntity.badRequest().build();
 
             List<RequestDTO> requestDTOList = new ArrayList<>();
 
-            for (Request request : inhabitant.getRequestList()) {
-                requestDTOList.add(new RequestDTO(request.getId(),request.getTitle(),request.getContent(),request.getTimeStamp(),request.getComment(),request.getCategory().getCategory(),request.getStatus().name()));
+            for (Task task : inhabitant.getTaskList()) {
+                requestDTOList.add(new RequestDTO(task.getId(), task.getTitle(), task.getContent(), task.getTimeStamp(), task.getComment(), task.getCategory().getCategory(), task.getStatus().name()));
             }
 
             return ResponseEntity.ok().body(Page.createPage(page, size,requestDTOList));
@@ -105,8 +113,16 @@ public class RequestController {
     @GetMapping(value = "/{id}")
     public ResponseEntity getRequest(@PathVariable Long id){
 
-        Request request = requestRepository.findById(id).orElse(null);
+        Task task = taskRepository.findById(id).orElse(null);
+        HashMap<String,Object> taskMap = new HashMap<>();
+        taskMap.put("id",task.getId());
+        taskMap.put("title",task.getTitle());
+        taskMap.put("timeStamp",task.getTimeStamp().format(DateTimeFormatter.ofPattern("mm:hh dd/MM/yyyy")));
+        taskMap.put("comment",task.getComment());
+        taskMap.put("content",task.getContent());
+        taskMap.put("category",task.getCategory().getCategory());
+        taskMap.put("status", RequestStatusTranslation.translateRequestStatus(task.getStatus()));
 
-        return ResponseEntity.ok(request);
+        return ResponseEntity.ok(taskMap);
     }
 }

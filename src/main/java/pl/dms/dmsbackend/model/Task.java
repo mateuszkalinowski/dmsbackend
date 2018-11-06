@@ -3,6 +3,7 @@ package pl.dms.dmsbackend.model;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 import pl.dms.dmsbackend.enums.RequestStatusEnum;
+import pl.dms.dmsbackend.model.users.Inhabitant;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,11 +11,10 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
-public class Request implements Serializable {
+public class Task implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

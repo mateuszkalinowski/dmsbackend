@@ -9,22 +9,25 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
-import pl.dms.dmsbackend.dataOutput.AuthenticationResponseDTO;
-import pl.dms.dmsbackend.dataInput.CredentialsDTO;
-import pl.dms.dmsbackend.dataOutput.MessageDTO;
-import pl.dms.dmsbackend.dataInput.PasswordChangeDTO;
-import pl.dms.dmsbackend.model.Inhabitant;
-import pl.dms.dmsbackend.model.User;
-import pl.dms.dmsbackend.model.Worker;
+import pl.dms.dmsbackend.utils.dataOutput.AuthenticationResponseDTO;
+import pl.dms.dmsbackend.utils.dataInput.CredentialsDTO;
+import pl.dms.dmsbackend.utils.dataOutput.MessageDTO;
+import pl.dms.dmsbackend.utils.dataInput.PasswordChangeDTO;
+import pl.dms.dmsbackend.model.users.Inhabitant;
+import pl.dms.dmsbackend.model.users.User;
+import pl.dms.dmsbackend.model.users.Worker;
 import pl.dms.dmsbackend.repositories.InhabitantRepository;
 import pl.dms.dmsbackend.repositories.UserRepository;
 import pl.dms.dmsbackend.repositories.WorkerRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping(value = "api")
+@Transactional
 public class LogInAndLogOutController {
 
     @Autowired
@@ -73,18 +76,33 @@ public class LogInAndLogOutController {
     public ResponseEntity info() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
-        Inhabitant inhabitant = inhabitantRepository.findTopByEmail(currentEmail);
-        if(inhabitant==null) {
-            Worker worker = workerRepository.findTopByEmail(currentEmail);
-            if(worker==null) {
+        User user = userRepository.findByEmail(currentEmail);
+        if(user==null) {
                 return ResponseEntity.badRequest().body(new MessageDTO("Nie znaleziono takie użytkownika"));
             }
-            else {
-                return ResponseEntity.ok().body(worker);
-            }
-        }
         else {
-            return ResponseEntity.ok().body(inhabitant);
+            Inhabitant inhabitant = inhabitantRepository.findByEmail(currentEmail);
+            if(inhabitant == null) {
+                Worker worker = workerRepository.findByEmail(currentEmail);
+                HashMap<String,Object> workerToReturn = new HashMap<>();
+                workerToReturn.put("firstname",worker.getFirstName());
+                workerToReturn.put("lastname",worker.getLastName());
+                workerToReturn.put("email",worker.getEmail());
+                workerToReturn.put("roles",worker.getUserRoles());
+                workerToReturn.put("phoneNumber",worker.getPhoneNumber());
+
+                return ResponseEntity.ok().body(workerToReturn);
+
+            }
+
+            HashMap<String,Object> inhabitantToReturn = new HashMap<>();
+            inhabitantToReturn.put("firstname",inhabitant.getFirstName());
+            inhabitantToReturn.put("lastname",inhabitant.getLastName());
+            inhabitantToReturn.put("email",inhabitant.getEmail());
+            inhabitantToReturn.put("roles",inhabitant.getUserRoles());
+            inhabitantToReturn.put("roomnumber",inhabitant.getRoomNumber());
+
+            return ResponseEntity.ok().body(inhabitantToReturn);
         }
     }
 

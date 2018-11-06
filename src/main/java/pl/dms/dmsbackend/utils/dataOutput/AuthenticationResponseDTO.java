@@ -1,6 +1,5 @@
-package pl.dms.dmsbackend.dataOutput;
+package pl.dms.dmsbackend.utils.dataOutput;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
